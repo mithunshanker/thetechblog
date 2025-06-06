@@ -1,0 +1,16 @@
+services:
+  - type: web
+    name: my-django-app
+    env: python
+    plan: free  # or starter, standard, etc.
+    region: oregon  # choose your region
+    buildCommand: |
+      pip install -r requirements.txt
+      python manage.py migrate
+      python manage.py collectstatic --noinput
+    startCommand: python manage.py migrate && echo "from django.contrib.auth import get_user_model; User = get_user_model(); User.objects.filter(username='mithun').exists() or User.objects.create_superuser('mithun', 'mithunshanker77@gmail.com', 'mithun1234')" | python manage.py shell && python manage.py collectstatic --noinput && gunicorn mysite.wsgi:application
+    staticPublishPath: staticfiles
+    routes:
+      - type: static
+        path: /static
+        servicePath: staticfiles
