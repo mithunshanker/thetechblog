@@ -1,0 +1,67 @@
+{% include "header/header.html" %}
+
+<main class="container my-4">
+  <div class="row gy-4">
+    <!-- Main Blog Post -->
+    <div class="col-12 col-lg-8">
+      <div class="card shadow-sm border-0 rounded-4">
+        <div class="ratio ratio-16x9 rounded-top overflow-hidden">
+          <img src="{{ post.img_url }}" class="w-100 h-100 object-fit-cover" alt="{{ post.title }}">
+        </div>
+        <div class="card-body px-3 px-md-4 py-4 py-md-5">
+          <div class="d-flex justify-content-between align-items-start flex-wrap">
+            <h1 class="card-title fw-bold mb-3 fs-4 fs-md-2">{{ post.title }}</h1>
+            <button class="btn btn-sm btn-outline-secondary mt-1 mt-md-0 d-none d-md-inline" onclick="toggleFontSize()">A</button>
+          </div>
+          <p class="text-muted small mb-3">Published on {{ post.created_at|date:"F j, Y" }}</p>
+          <article id="postContent" class="card-text fs-6 fs-md-5" style="line-height: 1.8; white-space: pre-wrap; word-break: break-word;">
+            {{ post.content }}
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <!-- Suggested Posts (stacked below on mobile) -->
+    <div class="col-12 col-lg-4">
+      <div class="card shadow-sm border-0 rounded-4 mb-3">
+        <div class="card-body px-3 px-md-4">
+          <h5 class="card-title fw-semibold mb-3">Other Posts</h5>
+          <ul class="list-group list-group-flush">
+            {% for suggestion in suggested_posts %}
+              <li class="list-group-item px-0 border-0">
+                <a href="{% url 'Details' suggestion.id %}" class="d-flex align-items-center text-decoration-none text-dark">
+                  <div class="flex-shrink-0 rounded overflow-hidden" style="width: 56px; height: 56px;">
+                    <img src="{{ suggestion.img_url }}" alt="{{ suggestion.title }}" class="w-100 h-100 object-fit-cover">
+                  </div>
+                  <div class="ms-2 ms-md-3 flex-grow-1">
+                    <p class="mb-1 fw-medium text-truncate" style="max-width: 220px;">{{ suggestion.title }}</p>
+                    <small class="text-muted">{{ suggestion.created_at|date:"M d, Y" }}</small>
+                  </div>
+                </a>
+              </li>
+            {% empty %}
+              <li class="list-group-item text-muted">No suggestions found.</li>
+            {% endfor %}
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<!-- Floating Back to Top Button (Mobile Only) -->
+<button onclick="window.scrollTo({ top: 0, behavior: 'smooth' });"
+  class="btn btn-primary position-fixed d-md-none"
+  style="bottom: 20px; right: 20px; z-index: 9999; border-radius: 50%; width: 48px; height: 48px;">
+  ↑
+</button>
+
+<script>
+  function toggleFontSize() {
+    const content = document.getElementById('postContent');
+    content.classList.toggle('fs-6');
+    content.classList.toggle('fs-5');
+  }
+</script>
+
+{% include "footer/footer.html" %}
