@@ -22,10 +22,15 @@ def home(request):
         'page_obj': page_obj
     })
 
+from django.shortcuts import render, get_object_or_404
+from .models import Post, Comment
+from .forms import CommentForm
+
 def details(request, id):
-    post = Post.objects.get(pk=id)
+    post = get_object_or_404(Post, pk=id)
     total_posts = Post.objects.count()
 
+    # Suggested Posts Logic
     def sug(pri):
         prik = pri
         if int(prik) > total_posts:
@@ -39,7 +44,21 @@ def details(request, id):
         except Post.DoesNotExist:
             continue
 
+    # Comment Form Logic
+    comments = post.comments.order_by('-created_at')  # Latest first
+    if request.method == "POST":
+        form = CommentForm(request.POST)
+        if form.is_valid():
+            new_comment = form.save(commit=False)
+            new_comment.post = post
+            new_comment.save()
+            form = CommentForm()  # Clear the form after submission
+    else:
+        form = CommentForm()
+
     return render(request, "details.html", {
         'post': post,
-        'suggested_posts': suggestions
+        'suggested_posts': suggestions,
+        'comments': comments,
+        'form': form
     })

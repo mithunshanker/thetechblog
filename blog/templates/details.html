@@ -2,9 +2,10 @@
 
 <main class="container my-4">
   <div class="row gy-4">
-    <!-- Main Blog Post -->
-    <div class="col-12 col-lg-8">
-      <div class="card shadow-sm border-0 rounded-4">
+
+    <!-- Blog Post -->
+    <div class="col-12 col-lg-8 order-1 order-lg-1">
+      <div class="card shadow-sm border-0 rounded-4 mb-0">
         <div class="ratio ratio-16x9 rounded-top overflow-hidden">
           <img src="{{ post.img_url }}" class="w-100 h-100 object-fit-cover" alt="{{ post.title }}">
         </div>
@@ -21,9 +22,9 @@
       </div>
     </div>
 
-    <!-- Suggested Posts (stacked below on mobile) -->
-    <div class="col-12 col-lg-4">
-      <div class="card shadow-sm border-0 rounded-4 mb-3">
+    <!-- Suggested Posts (Now flows naturally without sticky) -->
+    <div class="col-12 col-lg-4 order-2 order-lg-2">
+      <div class="card shadow-sm border-0 rounded-4 w-100">
         <div class="card-body px-3 px-md-4">
           <h5 class="card-title fw-semibold mb-3">Other Posts</h5>
           <ul class="list-group list-group-flush">
@@ -46,6 +47,52 @@
         </div>
       </div>
     </div>
+
+    <!-- Comments Section (Always last) -->
+    <div class="col-12 order-3">
+      <div class="card shadow-sm border-0 rounded-4">
+        <div class="card-body px-3 px-md-4 py-4">
+          <h5 class="fw-semibold mb-4">Comments</h5>
+          <div class="row gx-4 gy-4">
+            <!-- Comment Form -->
+            <div class="col-12 col-md-4">
+              <h6 class="mb-3">Leave a Comment</h6>
+              <form method="post" class="mb-3">
+                {% csrf_token %}
+                <div class="mb-3">
+                  {{ form.name.label_tag }}
+                  {{ form.name }}
+                </div>
+                <div class="mb-3">
+                  {{ form.content.label_tag }}
+                  {{ form.content }}
+                </div>
+                <button type="submit" class="btn btn-primary w-100">Post Comment</button>
+              </form>
+            </div>
+
+            <!-- Comments List -->
+            <div class="col-12 col-md-8">
+              <h6 class="mb-3">All Comments ({{ comments.count }})</h6>
+              <div>
+                {% for comment in comments %}
+                  <div class="mb-3 p-3 bg-light rounded shadow-sm">
+                    <div class="d-flex justify-content-between mb-1">
+                      <strong>{{ comment.name }}</strong>
+                      <small class="text-muted">{{ comment.created_at|date:"M d, Y - g:i a" }}</small>
+                    </div>
+                    <p class="mb-0">{{ comment.content }}</p>
+                  </div>
+                {% empty %}
+                  <p class="text-muted">No comments yet. Be the first to comment!</p>
+                {% endfor %}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
   </div>
 </main>
 
